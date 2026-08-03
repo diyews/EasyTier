@@ -101,7 +101,7 @@ function version(info: PeerRoutePair) {
   return info.route.version === '' ? 'unknown' : info.route.version
 }
 
-function hostnameTooltip(info: PeerRoutePair) {
+function hostnameTooltip(info: any) {
   const hostname = info?.route?.hostname
   const link = info.peer.conns?.find(o => o.peer_id === info.route.peer_id)?.tunnel?.remote_addr?.url
   return [hostname, link]
@@ -109,7 +109,7 @@ function hostnameTooltip(info: PeerRoutePair) {
   .join(', ')
 }
 
-function latencyTooltip(info: PeerRoutePair) {
+function latencyTooltip(info: any) {
   const cost = info?.route?.cost || 0
   const latency = info?.route?.path_latency_latency_first || 0
   const next_hop_peer_id = info?.route?.next_hop_peer_id || 0
