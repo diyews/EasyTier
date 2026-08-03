@@ -76,6 +76,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Set current ref as env variable
+        id: curref
         run: |
           echo "GIT_DESC=$(git log -1 --format=%cd.%h --date=format:%Y-%m-%d_%H:%M:%S)" >> $GITHUB_ENV
 
@@ -223,6 +224,21 @@ jobs:
         with:
           name: easytier-gui-${{ matrix.ARTIFACT_NAME }}
           path: |
+            ./artifacts/*
+            
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.curref.outputs.GIT_DESC }}
+          name: ${{ steps.curref.outputs.GIT_DESC }}
+          body: |
+            Automated release created at ${{ steps.curref.outputs.GIT_DESC }}
+          draft: false
+          prerelease: false
+          generate_release_notes: false
+          files: |
             ./artifacts/*
 
   gui-result:
