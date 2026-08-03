@@ -114,11 +114,11 @@ function hostnameTooltip(info: any) {
 }
 
 function latencyTooltip(info: any) {
-  const cost = info?.route?.cost || 0
+  // const cost = info?.route?.cost || 0
   const latency = (info?.route?.path_latency_latency_first || 0) + 'ms'
   const next_hop_peer_id = info?.route?.next_hop_peer_id || 0
 
-  let nextHopHostname = ''
+  let nextHopHostname = 'Direct'
   if (next_hop_peer_id && next_hop_peer_id !== info.route.peer_id) {
     const hit = peerRouteInfos.value.find((o: any) => o.route.peer_id === next_hop_peer_id) as any
     nextHopHostname = hit?.route?.hostname || ''
