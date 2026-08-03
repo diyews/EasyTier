@@ -103,9 +103,9 @@ function version(info: PeerRoutePair) {
 
 function hostnameTooltip(info: any) {
   const hostname = info?.route?.hostname
-  const link = info.peer.conns?.find(o => o.peer_id === info.route.peer_id)?.tunnel?.remote_addr?.url
+  const link = info.peer.conns?.find((o: any) => o.peer_id === info.route.peer_id)?.tunnel?.remote_addr?.url
   return [hostname, link]
-  .filter(o => !!o)
+  .filter((o: any) => !!o)
   .join(', ')
 }
 
@@ -116,12 +116,12 @@ function latencyTooltip(info: any) {
 
   let nextHopHostname = ''
   if (next_hop_peer_id && next_hop_peer_id !== info.route.peer_id) {
-    const hit = peerRouteInfos.value.find(o => o.route.peer_id === next_hop_peer_id)
+    const hit = peerRouteInfos.value.find((o: any) => o.route.peer_id === next_hop_peer_id) as any
     nextHopHostname = hit?.hostname || ''
   }
 
   return [cost, latency, next_hop_peer_id, nextHopHostname]
-  .filter(o => !!o)
+  .filter((o: any) => !!o)
   .join(', ')
 }
 
