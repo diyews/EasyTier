@@ -101,6 +101,30 @@ function version(info: PeerRoutePair) {
   return info.route.version === '' ? 'unknown' : info.route.version
 }
 
+function hostnameTooltip(info: PeerRoutePair) {
+  const hostname = info?.route?.hostname
+  const link = info.peer.conns?.find(o => o.peer_id === info.route.peer_id)?.tunnel?.remote_addr?.url
+  return [hostname, link]
+  .filter(o => !!o)
+  .join(', ')
+}
+
+function latencyTooltip(info: PeerRoutePair) {
+  const cost = info?.route?.cost || 0
+  const latency = info?.route?.path_latency_latency_first || 0
+  const next_hop_peer_id = info?.route?.next_hop_peer_id || 0
+
+  let nextHopHostname = ''
+  if (next_hop_peer_id && next_hop_peer_id !== info.route.peer_id) {
+    const hit = peerRouteInfos.value.find(o => o.route.peer_id === next_hop_peer_id)
+    nextHopHostname = hit?.hostname || ''
+  }
+
+  return [cost, latency, next_hop_peer_id, nextHopHostname]
+  .filter(o => !!o)
+  .join(', ')
+}
+
 function ipFormat(info: PeerRoutePair) {
   const ip = info.route.ipv4_addr
   if (typeof ip === 'string')
@@ -435,11 +459,11 @@ function showEventLogs() {
             <Column :header="t('hostname')">
               <template #body="slotProps">
                 <div v-if="!slotProps.data.route.cost || !slotProps.data.route.feature_flag.is_public_server"
-                  v-tooltip="slotProps.data.route.hostname">
+                  v-tooltip="hostnameTooltip(slotProps.data)">
                   {{
                     slotProps.data.route.hostname }}
                 </div>
-                <div v-else v-tooltip="slotProps.data.route.hostname" class="space-x-1">
+                <div v-else v-tooltip="hostnameTooltip(slotProps.data)" class="space-x-1">
                   <Tag v-if="slotProps.data.route.feature_flag.is_public_server" severity="info" value="Info">
                     {{ t('status.server') }}
                   </Tag>
@@ -451,7 +475,13 @@ function showEventLogs() {
             </Column>
             <Column :field="routeCost" :header="t('route_cost')" />
             <Column :field="tunnelProto" :header="t('tunnel_proto')" />
-            <Column :field="latencyMs" :header="t('latency')" />
+            <Column :field="latencyMs" :header="t('latency')">
+              <template #body="slotProps">
+                <div v-tooltip="latencyTooltip(slotProps.data)" class="space-x-1">
+                  {{ latencyMs(slotProps.data) }}
+                </div>
+              </template>
+            </Column>
             <Column :field="txBytes" :header="t('upload_bytes')" />
             <Column :field="rxBytes" :header="t('download_bytes')" />
             <Column :field="lossRate" :header="t('loss_rate')" />
