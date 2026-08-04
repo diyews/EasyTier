@@ -49,14 +49,14 @@ function errorPeer() {
 
   const a = props.curNetworkInst.detail.peer_route_pairs
     .map(o => {
-      return !o.peer?.conns?.[0]?.tunnel?.remote_addr?.url
+      return o.peer?.conns?.[0]?.tunnel?.remote_addr?.url
     })
   const b = props.currentNetworkConfig.peer_urls
 
   const errArr: any[] = []
   b.forEach(o => {
-    const aexist = a.includes(o)
-    if (!aexist) {
+    const exist = a.includes(o)
+    if (!exist) {
       errArr.push(o)
     }
   })
