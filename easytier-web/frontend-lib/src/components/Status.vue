@@ -519,7 +519,7 @@ function showEventLogs() {
                   <Tag v-if="slotProps.data.route.feature_flag.avoid_relay_data" severity="warn" value="Warn">
                     {{ t('status.relay') }}
                   </Tag>
-                  <Tag v-if="slotProps.data.route._errPeer" severity="warn" value="Warn">
+                  <Tag v-if="slotProps.data.route._errPeer" severity="contrast" value="Contrast">
                     {{ slotProps.data.route.hostname }}
                   </Tag>
                 </div>
