@@ -114,6 +114,8 @@ const selectedInstanceId = computed({
     },
     set(value: any) {
         console.log("set instanceId", value);
+        console.log("curNetworkInfo", curNetworkInfo);
+        console.log("currentNetworkConfig", currentNetworkConfig);
         instanceId.value = value ? value.uuid : undefined;
     }
 });

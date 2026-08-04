@@ -64,7 +64,8 @@ function errorPeer() {
   errArr.forEach(url => {
     arr.push({
       route: {
-        ipv4_addr: url.split('//')[1],
+        cost: -1,
+        ipv4_addr: url.split('//')?.[1] || url,
         hostname: url.match(/\/\/([^.]+)/)?.[1] || 'Error',
         _url: url,
         _errPeer: true
@@ -172,9 +173,6 @@ function latencyTooltip(info: any) {
 
 function ipFormat(info: PeerRoutePair) {
   const ip = info.route.ipv4_addr
-  if ((info.route as any)._errPeer) {
-    return (info.route as any)._url
-  }
   if (typeof ip === 'string')
     return ip
   return ip ? `${IPv4.fromNumber(ip.address.addr)}/${ip.network_length}` : ''
