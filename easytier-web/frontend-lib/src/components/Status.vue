@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useTimeAgo } from '@vueuse/core'
 import { IPv4 } from 'ip-num/IPNumber'
-import { NetworkInstance, type TunnelInfo, type NodeInfo, type PeerRoutePair } from '../types/network'
+import { NetworkInstance, type NetworkConfig, type TunnelInfo, type NodeInfo, type PeerRoutePair } from '../types/network'
 import { useI18n } from 'vue-i18n';
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 import { ipv4InetToString, ipv4ToString, ipv6ToString } from '../modules/utils';
@@ -10,6 +10,7 @@ import NetworkChart from './NetworkChart.vue';
 
 const props = defineProps<{
   curNetworkInst: NetworkInstance | null,
+  currentNetworkConfig: NetworkConfig | undefined,
 }>()
 
 const { t } = useI18n()
@@ -25,11 +26,54 @@ const peerRouteInfos = computed(() => {
         version: my_node_info?.version,
         stun_info: my_node_info?.stun_info
       },
-    }, ...(props.curNetworkInst.detail?.peer_route_pairs || [])]
+    }, ...(props.curNetworkInst.detail?.peer_route_pairs || []),
+       ...errorPeer()]
   }
 
   return []
 })
+
+function errorPeer() {
+  const arr: any[] = []
+  if (!props.curNetworkInst?.detail?.peer_route_pairs?.length || !props.currentNetworkConfig?.peer_urls?.length) {
+    return arr
+  }
+
+  const someEmpty = props.curNetworkInst?.detail.peer_route_pairs
+    .some(o => {
+      return !o.peer?.conns?.[0]?.tunnel?.remote_addr?.url
+    })
+  
+  // some peer url empty, connection maybe not completely
+  if (someEmpty) { return arr }
+
+  const a = props.curNetworkInst.detail.peer_route_pairs
+    .map(o => {
+      return !o.peer?.conns?.[0]?.tunnel?.remote_addr?.url
+    })
+  const b = props.currentNetworkConfig.peer_urls
+
+  const errArr = []
+  b.forEach(o => {
+    const exist = a.includes(o)
+    if (!exist) {
+      errArr.push(o)
+    }
+  })
+
+  errArr.forEach(url => {
+    arr.push({
+      route: {
+        ipv4_addr: url.split('//')[1],
+        hostname: url.match(/\/\/([^.]+)/)?.[1] || 'Error',
+        _url: url,
+        _errPeer: true
+      },
+    })
+  })
+
+  return arr
+}
 
 function routeCost(info: any) {
   if (info.route) {
@@ -128,6 +172,9 @@ function latencyTooltip(info: any) {
 
 function ipFormat(info: PeerRoutePair) {
   const ip = info.route.ipv4_addr
+  if ((info.route as any)._errPeer) {
+    return (info.route as any)._url
+  }
   if (typeof ip === 'string')
     return ip
   return ip ? `${IPv4.fromNumber(ip.address.addr)}/${ip.network_length}` : ''
@@ -470,6 +517,9 @@ function showEventLogs() {
                   </Tag>
                   <Tag v-if="slotProps.data.route.feature_flag.avoid_relay_data" severity="warn" value="Warn">
                     {{ t('status.relay') }}
+                  </Tag>
+                  <Tag v-if="slotProps.data.route._errPeer" severity="warn" value="Warn">
+                    {{ slotProps.data.route.hostname }}
                   </Tag>
                 </div>
               </template>
