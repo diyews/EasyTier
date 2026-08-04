@@ -53,10 +53,10 @@ function errorPeer() {
     })
   const b = props.currentNetworkConfig.peer_urls
 
-  const errArr = []
+  const errArr: any[] = []
   b.forEach(o => {
-    const exist = a.includes(o)
-    if (!exist) {
+    const aexist = a.includes(o)
+    if (!aexist) {
       errArr.push(o)
     }
   })
