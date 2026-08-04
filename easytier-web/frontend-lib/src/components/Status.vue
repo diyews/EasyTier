@@ -509,8 +509,14 @@ function showEventLogs() {
               <template #body="slotProps">
                 <div v-if="!slotProps.data.route.cost || !slotProps.data.route.feature_flag.is_public_server"
                   v-tooltip="hostnameTooltip(slotProps.data)">
-                  {{
-                    slotProps.data.route.hostname }}
+                  <template v-if="slotProps.data.route._errPeer">
+                    <Tag severity="danger" value="Danger">
+                      {{ slotProps.data.route.hostname }}
+                    </Tag>
+                  </template>
+                  <template v-else>
+                    {{ slotProps.data.route.hostname }}
+                  </template>
                 </div>
                 <div v-else v-tooltip="hostnameTooltip(slotProps.data)" class="space-x-1">
                   <Tag v-if="slotProps.data.route.feature_flag.is_public_server" severity="info" value="Info">
@@ -518,9 +524,6 @@ function showEventLogs() {
                   </Tag>
                   <Tag v-if="slotProps.data.route.feature_flag.avoid_relay_data" severity="warn" value="Warn">
                     {{ t('status.relay') }}
-                  </Tag>
-                  <Tag v-if="slotProps.data.route._errPeer" severity="contrast" value="Contrast">
-                    {{ slotProps.data.route.hostname }}
                   </Tag>
                 </div>
               </template>
