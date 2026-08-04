@@ -68,7 +68,10 @@ function errorPeer() {
         ipv4_addr: url.split('//')?.[1] || url,
         hostname: url.match(/\/\/([^.]+)/)?.[1] || 'Error',
         _url: url,
-        _errPeer: true
+        _errPeer: true,
+        feature_flag: {
+          is_public_server: true
+        }
       },
     })
   })
