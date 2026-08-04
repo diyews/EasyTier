@@ -231,8 +231,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.curref.outputs.GIT_DESC }}
-          name: ${{ steps.curref.outputs.GIT_DESC }}
+          tag_name: ${{ env.GIT_DESC }}
+          name: ${{ env.GIT_DESC }}
           body: |
             Automated release created at ${{ steps.curref.outputs.GIT_DESC }}
           draft: false
