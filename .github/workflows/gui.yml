@@ -81,6 +81,9 @@ jobs:
       - name: Set current ref as env variable
         run: |
           echo "GIT_DESC=$(git log -1 --format=%cd.%h --date=format:%Y-%m-%d_%H:%M:%S)" >> $GITHUB_ENV
+          TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
+          TAG_NAME_T="v${TIMESTAMP}"
+          echo "TAG_NAME_T=${TAG_NAME_T}" >> $GITHUB_ENV
 
       - name: Prepare build environment
         uses: ./.github/actions/prepare-build
@@ -154,10 +157,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.GIT_DESC }}
-          name: ${{ env.GIT_DESC }}
+          tag_name: ${{ env.TAG_NAME_T }}
+          name: ${{ env.TAG_NAME_T }}
           body: |
-            Automated release created at ${{ steps.curref.outputs.GIT_DESC }}
+            Automated release created at ${{ env.TAG_NAME_T }}
           draft: false
           prerelease: false
           generate_release_notes: false
