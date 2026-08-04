@@ -16,7 +16,7 @@ const props = defineProps<{
 const { t } = useI18n()
 
 const peerRouteInfos = computed(() => {
-  console.log(props.curNetworkInst);
+  // console.log(props.curNetworkInst);
   if (props.curNetworkInst) {
     const my_node_info = props.curNetworkInst.detail?.my_node_info
     return [{
