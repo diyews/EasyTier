@@ -37,6 +37,8 @@ jobs:
           cancel_others: 'true'
           paths: '["Cargo.toml", "Cargo.lock", "easytier/**", "easytier-gui/**", ".github/workflows/gui.yml", ".github/actions/**", "easytier-web/frontend-lib/**"]'
   build-gui:
+    permissions:
+      contents: write
     strategy:
       fail-fast: true
       matrix:
