@@ -74,10 +74,6 @@ function humanFileSize(bytes: number, si = false, dp = 1) {
   return `${bytes.toFixed(dp)} ${units[u]}`
 }
 
-function getCost(info: any) {
-  return info?.route?.cost || -1
-}
-
 function latencyMs(info: PeerRoutePair) {
   let lat_us_sum = statsCommon(info, 'stats.latency_us')
   if (lat_us_sum === undefined)
@@ -479,7 +475,6 @@ function showEventLogs() {
             </Column>
             <Column :field="routeCost" :header="t('route_cost')" />
             <Column :field="tunnelProto" :header="t('tunnel_proto')" />
-            <Column :field="getCost" :header="'Cost'" />
             <Column :field="latencyMs" :header="t('latency')">
               <template #body="slotProps">
                 <div v-tooltip="latencyTooltip(slotProps.data)" class="space-x-1">

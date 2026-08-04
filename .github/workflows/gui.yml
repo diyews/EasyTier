@@ -147,6 +147,21 @@ jobs:
           path: |
             ./artifacts/*
 
+      - name: Release
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.GIT_DESC }}
+          name: ${{ env.GIT_DESC }}
+          body: |
+            Automated release created at ${{ steps.curref.outputs.GIT_DESC }}
+          draft: false
+          prerelease: false
+          generate_release_notes: false
+          files: |
+            ./artifacts/*
+
   gui-result:
     runs-on: ubuntu-latest
     needs: [ pre_job, build-gui ]
