@@ -81,9 +81,6 @@ jobs:
       - name: Set current ref as env variable
         run: |
           echo "GIT_DESC=$(git log -1 --format=%cd.%h --date=format:%Y-%m-%d_%H:%M:%S)" >> $GITHUB_ENV
-          TIMESTAMP=$(date +"%Y%m%d-%H%M%S")
-          TAG_NAME_T="v${TIMESTAMP}"
-          echo "TAG_NAME_T=${TAG_NAME_T}" >> $GITHUB_ENV
 
       - name: Prepare build environment
         uses: ./.github/actions/prepare-build
@@ -152,7 +149,32 @@ jobs:
           path: |
             ./artifacts/*
 
-      - name: Release
+      
+
+  gui-result:
+    runs-on: ubuntu-latest
+    needs: [ pre_job, build-gui ]
+    if: needs.pre_job.result == 'success' && needs.pre_job.outputs.should_skip != 'true' && !cancelled()
+    steps:
+      - name: Mark result as failed
+        if: contains(needs.*.result, 'failure')
+        run: exit 1
+
+  release:
+    needs: [ pre_job, build-gui ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - name: Create tag
+        run: |
+          TIMESTAMP=$(TZ='Asia/Shanghai' date +"%Y%m%d-%H%M%S")
+          TAG_NAME_T="v${TIMESTAMP}"
+          echo "TAG_NAME_T=${TAG_NAME_T}" >> $GITHUB_ENV
+          
+      - name: Create Release
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -165,13 +187,4 @@ jobs:
           prerelease: false
           generate_release_notes: false
           files: |
-            ./artifacts/*
-
-  gui-result:
-    runs-on: ubuntu-latest
-    needs: [ pre_job, build-gui ]
-    if: needs.pre_job.result == 'success' && needs.pre_job.outputs.should_skip != 'true' && !cancelled()
-    steps:
-      - name: Mark result as failed
-        if: contains(needs.*.result, 'failure')
-        run: exit 1
+            dist/**/*
