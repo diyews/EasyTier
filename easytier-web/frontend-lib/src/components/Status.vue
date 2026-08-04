@@ -15,6 +15,7 @@ const props = defineProps<{
 const { t } = useI18n()
 
 const peerRouteInfos = computed(() => {
+  console.log(props.curNetworkInst);
   if (props.curNetworkInst) {
     const my_node_info = props.curNetworkInst.detail?.my_node_info
     return [{
@@ -103,7 +104,7 @@ function version(info: PeerRoutePair) {
 
 function hostnameTooltip(info: any) {
   const hostname = info?.route?.hostname
-  const link = info.peer.conns?.find((o: any) => o.peer_id === info.route.peer_id)?.tunnel?.remote_addr?.url
+  const link = info.peer?.conns?.find((o: any) => o.peer_id === info.route.peer_id)?.tunnel?.remote_addr?.url
   return [hostname, link]
   .filter((o: any) => !!o)
   .join(', ')
