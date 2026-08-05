@@ -26,8 +26,9 @@ const peerRouteInfos = computed(() => {
         version: my_node_info?.version,
         stun_info: my_node_info?.stun_info
       },
-    }, ...(props.curNetworkInst.detail?.peer_route_pairs || []),
-       ...errorPeer()]
+    },
+    ...errorPeer(),
+    ...(props.curNetworkInst.detail?.peer_route_pairs || [])]
   }
 
   return []
