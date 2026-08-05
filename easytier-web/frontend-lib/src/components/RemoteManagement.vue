@@ -32,6 +32,8 @@ const showConfigEditDialog = ref(false);
 const isEditingNetwork = ref(false); // Flag to indicate if we're in network editing mode
 const currentNetworkConfig = ref<NetworkTypes.NetworkConfig | undefined>(undefined);
 
+const activeNetworkConfig = ref<NetworkTypes.NetworkConfig | undefined>(undefined);
+
 const listInstanceIdResponse = ref<Api.ListNetworkInstanceIdResponse | undefined>(undefined);
 
 const isRunning = (instanceId: string) => {
@@ -114,8 +116,11 @@ const selectedInstanceId = computed({
     },
     set(value: any) {
         console.log("set instanceId", value);
-        console.log("curNetworkInfo", curNetworkInfo.value);
-        console.log("currentNetworkConfig", currentNetworkConfig.value);
+        if (curNetworkInfo.value?.instance_id === currentNetworkConfig.value?.instance_id) {
+          activeNetworkConfig.value = currentNetworkConfig.value;
+          console.log("curNetworkInfo", curNetworkInfo.value);
+          console.log("activeNetworkConfig", activeNetworkConfig.value);
+        }
         instanceId.value = value ? value.uuid : undefined;
     }
 });
@@ -572,7 +577,7 @@ onUnmounted(() => {
                 </div>
 
                 <Status v-if="(curNetworkInfo?.error_msg ?? '') === ''" v-bind:cur-network-inst="curNetworkInfo"
-                    v-bind:current-network-config="currentNetworkConfig"
+                    v-bind:current-network-config="activeNetworkConfig"
                     class="mb-4">
                 </Status>
                 <Message v-else severity="error" class="mb-4">{{ curNetworkInfo?.error_msg }}</Message>
