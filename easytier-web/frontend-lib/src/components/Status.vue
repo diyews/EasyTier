@@ -528,15 +528,15 @@ function showEventLogs() {
                 </div>
               </template>
             </Column>
-            <Column :field="routeCost" :header="t('route_cost')" />
-            <Column :field="tunnelProto" :header="t('tunnel_proto')" />
-            <Column :field="latencyMs" :header="t('latency')">
+            <Column :field="routeCost" :header="t('route_cost')">
               <template #body="slotProps">
                 <div v-tooltip="latencyTooltip(slotProps.data)" class="space-x-1">
-                  {{ latencyMs(slotProps.data) }}
+                  {{ routeCost(slotProps.data) }}
                 </div>
               </template>
             </Column>
+            <Column :field="tunnelProto" :header="t('tunnel_proto')" />
+            <Column :field="latencyMs" :header="t('latency')" />
             <Column :field="txBytes" :header="t('upload_bytes')" />
             <Column :field="rxBytes" :header="t('download_bytes')" />
             <Column :field="lossRate" :header="t('loss_rate')" />
