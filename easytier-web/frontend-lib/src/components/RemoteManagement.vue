@@ -113,7 +113,7 @@ const selectedInstanceId = computed({
         return instanceList.value.find((instance) => instance.uuid === instanceId.value);
     },
     set(value: any) {
-        console.log("set instanceId", value);
+        // console.log("set instanceId", value);
 
         instanceId.value = value ? value.uuid : undefined;
     }

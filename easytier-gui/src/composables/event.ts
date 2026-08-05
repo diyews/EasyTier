@@ -19,7 +19,7 @@ const EVENTS = Object.freeze({
 });
 
 function onSaveConfigs(event: Event<StoredGuiConfig[]>) {
-    console.log(`Received event '${EVENTS.SAVE_CONFIGS}': ${event.payload}`);
+    // console.log(`Received event '${EVENTS.SAVE_CONFIGS}': ${event.payload}`);
     localStorage.setItem(
         'networkList',
         JSON.stringify(event.payload.map(({ config, source }) => ({
@@ -56,7 +56,7 @@ function normalizeInstanceIdPayload(payload: unknown): string {
 
 async function onPreRunNetworkInstance(event: Event<unknown>) {
     const instanceId = normalizeInstanceIdPayload(event.payload)
-    console.log(`Received event '${EVENTS.PRE_RUN_NETWORK_INSTANCE}', raw payload:`, event.payload, 'normalized:', instanceId)
+    // console.log(`Received event '${EVENTS.PRE_RUN_NETWORK_INSTANCE}', raw payload:`, event.payload, 'normalized:', instanceId)
     if (type() === 'android') {
         await prepareVpnService(instanceId);
     }

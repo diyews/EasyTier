@@ -176,6 +176,9 @@ function latencyTooltip(info: any) {
 }
 
 function ipFormat(info: PeerRoutePair) {
+  if (info?.route?.feature_flag?.is_public_server) {
+    return info.route?.hostname?.replace('PublicServer_', '') || ''
+  }
   const ip = info.route.ipv4_addr
   if (typeof ip === 'string')
     return ip
