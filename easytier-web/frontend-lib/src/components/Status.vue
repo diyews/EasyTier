@@ -69,9 +69,6 @@ function errorPeer() {
         hostname: url.match(/\/\/([^.]+)/)?.[1] || 'Error',
         _url: url,
         _errPeer: true,
-        feature_flag: {
-          is_public_server: true
-        }
       },
     })
   })
