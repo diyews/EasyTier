@@ -122,6 +122,7 @@ watch(selectedInstanceId, async (newVal, oldVal) => {
     if (newVal?.uuid !== oldVal?.uuid && (networkIsDisabled.value || isEditingNetwork.value)) {
         await loadCurrentNetworkConfig();
     } else {
+        loadCurrentNetworkConfig();
         await loadCurrentNetworkInfo();
     }
 
